@@ -18,7 +18,9 @@ const {Schema} = require('protocore')
 ## What is Protocore?
 
 Protocore makes building custom binary protocols a snap.
+
 It's a lightweight Node library that takes the pain out of making binary protocols for games, databases, and other performance-dependent applications!
+
 Protocore allows developers to create advanced protocols with powerful functionality and with maximum efficiency.
 
 ## Define a Schema
@@ -38,6 +40,7 @@ const personSchema = new Schema([
 ```
 
 The above code defines a simple schema which represents a person.
+
 It includes a `firstName` string field and an `age`, which is a UInt8.
 
 ## Build a Buffer from a Schema

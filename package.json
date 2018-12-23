@@ -1,6 +1,6 @@
 {
   "name": "protocore",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Specify and deploy custom binary protocol structures in Node",
   "main": "index.js",
   "scripts": {
