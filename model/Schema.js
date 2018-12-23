@@ -8,7 +8,9 @@ module.exports = class Schema {
 			buf = buf.slice(from)
 		}
 
-		let readIndex = 0
+		const protoVersion = buf[0]
+
+		let readIndex = 1
 
 		const readContent = []
 
@@ -93,7 +95,7 @@ module.exports = class Schema {
 	}
 
 	build (data) {
-		const bufSegments = []
+		const bufSegments = [Buffer.from([1])]
 
 		const writeContent = []
 
