@@ -11,38 +11,22 @@ module.exports = class BlockSchema {
 		const componentNames = this.schema.map((component) => component.name)
 
 		for (let i = 0; i < this.schema.length; i++) {
-			const activeComponent = this.schema[i]
-			const readType = activeComponent.type
+			const readSchema = this.schema[i]
+			const readType = readSchema.type
 
-			if (readType === 'int8') {
-				readContent.push(buf.readInt8(readIndex))
+			if (readType === 'int') {
+				const readBytes = readSchema.size / 8
 
-				readIndex += 1
+				readContent.push(buf.readIntLE(readIndex, readBytes))
+
+				readIndex += readBytes
 			}
-			else if (readType === 'int16') {
-				readContent.push(buf.readInt16LE(readIndex))
+			else if (readType === 'uint') {
+				const readBytes = readSchema.size / 8
 
-				readIndex += 2
-			}
-			else if (readType === 'int32') {
-				readContent.push(buf.readInt16LE(readIndex))
+				readContent.push(buf.readUIntLE(readIndex, readBytes))
 
-				readIndex += 4
-			}
-			else if (readType === 'uint8') {
-				readContent.push(buf.readUInt8(readIndex))
-
-				readIndex += 1
-			}
-			else if (readType === 'uint16') {
-				readContent.push(buf.readUInt16LE(readIndex))
-
-				readIndex += 2
-			}
-			else if (readType === 'uint32') {
-				readContent.push(buf.readUInt32LE(readIndex))
-
-				readIndex += 4
+				readIndex += readBytes
 			}
 			else if (readType === 'float') {
 				readContent.push(buf.readFloatLE(readIndex))
@@ -58,7 +42,7 @@ module.exports = class BlockSchema {
 				const stringLength = buf[readIndex]
 				const stringStart = readIndex + 1
 
-				readContent.push(buf.toString(activeComponent.encoding || 'utf8', stringStart, stringStart + stringLength))
+				readContent.push(buf.toString(readSchema.encoding, stringStart, stringStart + stringLength))
 
 				readIndex += 1 + stringLength
 			}
@@ -81,55 +65,31 @@ module.exports = class BlockSchema {
 		for (let i = 0; i < this.schema.length; i++) {
 			writeContent.push({
 				'value': data[this.schema[i].name],
-				'type': this.schema[i].type,
-				'schema': this.schema
+				'schema': this.schema[i]
 			})
 		}
 
 		for (let i = 0; i < writeContent.length; i++) {
-			const writeValue = writeContent[i].value
-			const writeType = writeContent[i].type
 			const writeSchema = writeContent[i].schema
+			const writeType = writeSchema.type
 
-			if (writeType === 'int8') {
-				const make = Buffer.alloc(1)
+			const writeValue = writeContent[i].value
 
-				make.writeInt8(writeValue)
+			if (writeType === 'int') {
+				const makeBytes = writeSchema.size / 8
 
-				bufSegments.push(make)
-			}
-			else if (writeType === 'int16') {
-				const make = Buffer.alloc(2)
+				const make = Buffer.alloc(makeBytes)
 
-				make.writeInt16LE(writeValue)
+				make.writeIntLE(writeValue, 0, makeBytes)
 
 				bufSegments.push(make)
 			}
-			else if (writeType === 'int32') {
-				const make = Buffer.alloc(4)
+			if (writeType === 'uint') {
+				const makeBytes = writeSchema.size / 8
 
-				make.writeInt32LE(writeValue)
+				const make = Buffer.alloc(makeBytes)
 
-				bufSegments.push(make)
-			}
-			else if (writeType === 'uint8') {
-				const make = Buffer.alloc(1)
-
-				make.writeUInt8(writeValue)
-
-				bufSegments.push(make)
-			}
-			else if (writeType === 'uint16') {
-				const make = Buffer.alloc(2)
-
-				make.writeUInt16LE(writeValue)
-
-				bufSegments.push(make)
-			}
-			else if (writeType === 'uint32') {
-				const make = Buffer.alloc(4)
-
-				make.writeUInt32LE(writeValue)
+				make.writeUIntLE(writeValue, 0, makeBytes)
 
 				bufSegments.push(make)
 			}
@@ -148,7 +108,7 @@ module.exports = class BlockSchema {
 				bufSegments.push(make)
 			}
 			else if (writeType === 'string') {
-				const stringBuf = Buffer.from(writeValue, writeSchema.encoding || 'utf8')
+				const stringBuf = Buffer.from(writeValue, writeSchema.encoding)
 
 				const stringLength = stringBuf.length
 
