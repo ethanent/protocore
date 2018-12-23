@@ -1,9 +1,13 @@
-module.exports = class BlockSchema {
+module.exports = class Schema {
 	constructor (schema) {
 		this.schema = schema
 	}
 
-	parse (buf) {
+	parse (buf, from, specialOptions) {
+		if (typeof from === 'number') {
+			buf = buf.slice(from)
+		}
+
 		let readIndex = 0
 
 		const readContent = []
@@ -46,6 +50,29 @@ module.exports = class BlockSchema {
 
 				readIndex += 1 + stringLength
 			}
+			else if (readType === 'list') {
+				const listLength = buf[readIndex]
+				const listStart = readIndex + 1
+				const listSchema = readSchema.of
+
+				const readSchemaOutputs = []
+
+				let listLocation = 0
+
+				for (let listIndex = 0; listIndex < listLength; listIndex++) {
+					const specialParseResult = listSchema.parse(buf, listStart + listLocation, {
+						'returnDetails': true
+					})
+
+					readSchemaOutputs.push(specialParseResult.data)
+
+					listLocation += specialParseResult.finishedIndex
+				}
+
+				readContent.push(readSchemaOutputs)
+
+				readIndex += listLocation + 1
+			}
 		}
 
 		const data = {}
@@ -54,7 +81,13 @@ module.exports = class BlockSchema {
 			data[componentNames[i]] = readContent[i]
 		}
 
-		return data
+		if (typeof specialOptions === 'object' && specialOptions.returnDetails === true) {
+			return {
+				'finishedIndex': readIndex,
+				'data': data
+			}
+		}
+		else return data
 	}
 
 	build (data) {
@@ -84,7 +117,7 @@ module.exports = class BlockSchema {
 
 				bufSegments.push(make)
 			}
-			if (writeType === 'uint') {
+			else if (writeType === 'uint') {
 				const makeBytes = writeSchema.size / 8
 
 				const make = Buffer.alloc(makeBytes)
@@ -113,6 +146,18 @@ module.exports = class BlockSchema {
 				const stringLength = stringBuf.length
 
 				bufSegments.push(Buffer.concat([Buffer.from([stringLength]), stringBuf]))
+			}
+			else if (writeType === 'list') {
+				const listLength = writeValue.length
+				const listSchema = writeSchema.of
+
+				const listValues = []
+
+				for (let listIndex = 0; listIndex < listLength; listIndex++) {
+					listValues.push(listSchema.build(writeValue[listIndex]))
+				}
+
+				bufSegments.push(Buffer.concat([Buffer.from([listLength])].concat(listValues)))
 			}
 		}
 

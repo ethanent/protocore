@@ -2,7 +2,7 @@
   "name": "protocore",
   "version": "1.0.0",
   "description": "Specify and deploy custom binary protocol structures in Node",
-  "main": "model/BlockSchema.js",
+  "main": "model/Schema.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

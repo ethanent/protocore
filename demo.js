@@ -17,9 +17,20 @@ const mySchema = new Schema([
 		'size': 32
 	},
 	{
-		'name': 'message',
-		'type': 'string',
-		'encoding': 'ascii'
+		'name': 'friends',
+		'type': 'list',
+		'of': new Schema([
+			{
+				'name': 'name',
+				'type': 'string',
+				'encoding': 'ascii'
+			},
+			{
+				'name': 'age',
+				'type': 'uint',
+				'size': 8
+			}
+		])
 	}
 ])
 
@@ -27,7 +38,16 @@ const originalData = {
 	'name': 'Ethan',
 	'age': 17,
 	'randomNumber': -197,
-	'message': 'Hello :)'
+	'friends': [
+		{
+			'name': 'Asher',
+			'age': 16
+		},
+		{
+			'name': 'Willow',
+			'age': 17
+		}
+	]
 }
 
 const built = mySchema.build(originalData)
