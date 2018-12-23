@@ -1,0 +1,28 @@
+{
+  "name": "protocore",
+  "version": "1.0.0",
+  "description": "Specify and deploy custom binary protocol structures in Node",
+  "main": "model/BlockSchema.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ethanent/protocore.git"
+  },
+  "keywords": [
+    "protocol",
+    "binary",
+    "data",
+    "encoding",
+    "buffer",
+    "format",
+    "schema"
+  ],
+  "author": "Ethan Davis",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ethanent/protocore/issues"
+  },
+  "homepage": "https://github.com/ethanent/protocore#readme"
+}
