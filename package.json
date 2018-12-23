@@ -24,5 +24,6 @@
   "bugs": {
     "url": "https://github.com/ethanent/protocore/issues"
   },
-  "homepage": "https://github.com/ethanent/protocore#readme"
+  "homepage": "https://github.com/ethanent/protocore#readme",
+  "files": ["index.js", "model/Schema.js"]
 }
