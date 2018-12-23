@@ -12,11 +12,6 @@ const mySchema = new Schema([
 		'size': 8
 	},
 	{
-		'name': 'randomNumber',
-		'type': 'int',
-		'size': 32
-	},
-	{
 		'name': 'friends',
 		'type': 'list',
 		'of': new Schema([
@@ -31,6 +26,11 @@ const mySchema = new Schema([
 				'size': 8
 			}
 		])
+	},
+	{
+		'name': 'randomNumber',
+		'type': 'int',
+		'size': 32
 	}
 ])
 

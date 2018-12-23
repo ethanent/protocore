@@ -51,8 +51,10 @@ module.exports = class Schema {
 				readIndex += 1 + stringLength
 			}
 			else if (readType === 'list') {
-				const listLength = buf[readIndex]
-				const listStart = readIndex + 1
+				const listLengthLength = 4
+
+				const listLength = buf.readUIntLE(readIndex, listLengthLength)
+				const listStart = readIndex + listLengthLength
 				const listSchema = readSchema.of
 
 				const readSchemaOutputs = []
@@ -71,7 +73,7 @@ module.exports = class Schema {
 
 				readContent.push(readSchemaOutputs)
 
-				readIndex += listLocation + 1
+				readIndex += listLocation + listLengthLength
 			}
 		}
 
@@ -148,8 +150,14 @@ module.exports = class Schema {
 				bufSegments.push(Buffer.concat([Buffer.from([stringLength]), stringBuf]))
 			}
 			else if (writeType === 'list') {
+				const listLengthLength = 4
+
 				const listLength = writeValue.length
 				const listSchema = writeSchema.of
+
+				const listLengthBuf = Buffer.alloc(listLengthLength)
+
+				listLengthBuf.writeUIntLE(listLength, 0, listLengthLength)
 
 				const listValues = []
 
@@ -157,7 +165,7 @@ module.exports = class Schema {
 					listValues.push(listSchema.build(writeValue[listIndex]))
 				}
 
-				bufSegments.push(Buffer.concat([Buffer.from([listLength])].concat(listValues)))
+				bufSegments.push(Buffer.concat([listLengthBuf].concat(listValues)))
 			}
 		}
 
