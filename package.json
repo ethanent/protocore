@@ -4,7 +4,7 @@
   "description": "Specify and deploy custom binary protocol structures in Node",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test.js"
   },
   "repository": {
     "type": "git",
@@ -25,5 +25,11 @@
     "url": "https://github.com/ethanent/protocore/issues"
   },
   "homepage": "https://github.com/ethanent/protocore#readme",
-  "files": ["index.js", "model/Schema.js"]
+  "files": [
+    "index.js",
+    "model/Schema.js"
+  ],
+  "devDependencies": {
+    "whew": "^1.1.3"
+  }
 }
