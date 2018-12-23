@@ -1,4 +1,4 @@
-const Schema = require('./')
+const {Schema} = require(__dirname)
 
 const mySchema = new Schema([
 	{
