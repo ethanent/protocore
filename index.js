@@ -1,5 +1,6 @@
 const path = require('path')
 
 module.exports = {
-	'Schema': require(path.join(__dirname, 'model', 'Schema.js'))
+	'Schema': require(path.join(__dirname, 'model', 'Schema.js')),
+	'StreamingAbstractor': require(path.join(__dirname, 'model', 'StreamingAbstractor.js'))
 }

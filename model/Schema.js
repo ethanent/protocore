@@ -12,6 +12,8 @@ module.exports = class Schema {
 
 		let readIndex = 1
 
+		let hadUnderflow = false
+
 		const readContent = []
 
 		const componentNames = this.schema.map((component) => component.name)
@@ -45,12 +47,32 @@ module.exports = class Schema {
 				readIndex += 8
 			}
 			else if (readType === 'string') {
-				const stringLength = buf[readIndex]
-				const stringStart = readIndex + 1
+				const stringLengthLength = 4
+
+				const stringLength = buf.readUIntLE(readIndex, stringLengthLength)
+				const stringStart = readIndex + stringLengthLength
+
+				if (stringStart + stringLength > buf.length) {
+					hadUnderflow = true
+				}
 
 				readContent.push(buf.toString(readSchema.encoding, stringStart, stringStart + stringLength))
 
-				readIndex += 1 + stringLength
+				readIndex += stringLengthLength + stringLength
+			}
+			else if (readType === 'buffer') {
+				const bufLengthLength = 4
+
+				const bufLength = buf.readUIntLE(readIndex, bufLengthLength)
+				const bufStart = readIndex + bufLengthLength
+
+				if (bufStart + bufLength > buf.length) {
+					hadUnderflow = true
+				}
+
+				readContent.push(buf.slice(bufStart, bufStart + bufLength))
+
+				readIndex += bufLengthLength + bufLength
 			}
 			else if (readType === 'list') {
 				const listLengthLength = 4
@@ -88,7 +110,8 @@ module.exports = class Schema {
 		if (typeof specialOptions === 'object' && specialOptions.returnDetails === true) {
 			return {
 				'finishedIndex': readIndex,
-				'data': data
+				'data': data,
+				'underflows': hadUnderflow
 			}
 		}
 		else return data
@@ -145,11 +168,28 @@ module.exports = class Schema {
 				bufSegments.push(make)
 			}
 			else if (writeType === 'string') {
+				const stringLengthLength = 4
+
 				const stringBuf = Buffer.from(writeValue, writeSchema.encoding)
 
 				const stringLength = stringBuf.length
 
-				bufSegments.push(Buffer.concat([Buffer.from([stringLength]), stringBuf]))
+				const stringLengthBuf = Buffer.alloc(stringLengthLength)
+
+				stringLengthBuf.writeUIntLE(stringLength, 0, stringLengthLength)
+
+				bufSegments.push(Buffer.concat([stringLengthBuf, stringBuf]))
+			}
+			else if (writeType === 'buffer') {
+				const bufLengthLength = 4
+
+				const bufLength = writeValue.length
+
+				const bufLengthBuf = Buffer.alloc(bufLengthLength)
+
+				bufLengthBuf.writeUIntLE(bufLength, 0, bufLengthLength)
+
+				bufSegments.push(Buffer.concat([bufLengthBuf, writeValue]))
 			}
 			else if (writeType === 'list') {
 				const listLengthLength = 4
