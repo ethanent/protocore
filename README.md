@@ -126,11 +126,11 @@ const sanFrancisco = citySchema.parse(sanFranciscoBuf)
 `sanFrancisco` will be similar to the object we built `sanFranciscoBuf` from. It will have an array of building objects.
 
 
-### Utilizing StreamingAbstractor
+## Utilizing StreamingAbstractor
 
-StreamingAbstractors allow us to create duplex, event-based streaming systems for applications.
+`StreamingAbstractor`s allow us to create duplex, event-based streaming systems for applications.
 
-Let's create a StreamingAbstractor.
+Let's create a `StreamingAbstractor`.
 
 ```js
 const myAbstractor = new StreamingAbstractor()
@@ -148,11 +148,11 @@ myAbstractor.register('login', new Schema([
 ]))
 ```
 
-Above we've registered an event called 'login' in our abstractor. Now it can recieve login events from a stream connected to another StreamingAbstractor.
+Above we've registered an event called 'login' in our abstractor. Now it can recieve login events from a stream connected to another `StreamingAbstractor`.
 
-#### Recieving Events Through StreamingAbstractor
+### Recieving Events Through StreamingAbstractor
 
-Now that we have a StreamingAbstractor (`myAbstractor`) with the `login` event registered, we'll listen for `login` on our end.
+Now that we have a `StreamingAbstractor` (`myAbstractor`) with the `login` event registered, we'll listen for `login` on our end.
 
 ```js
 myAbstractor.on('login', (data) => {
@@ -160,7 +160,7 @@ myAbstractor.on('login', (data) => {
 })
 ```
 
-#### Sending Events Through StreamingAbstractor
+### Sending Events Through StreamingAbstractor
 
 Because we've registered the `login` event, we can send `login` events using `myAbstractor`.
 
