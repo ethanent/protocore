@@ -58,7 +58,7 @@ Here we've built a buffer from Ethan's data using the `personSchema` Schema. The
 
 ## Parse a Buffer from a Schema
 
-```
+```js
 // ^ Let's say ethanBuf is a buffer created with the personSchema Schema
 
 const parsed = personSchema.parse(ethanBuf)
@@ -124,3 +124,49 @@ const sanFrancisco = citySchema.parse(sanFranciscoBuf)
 ```
 
 `sanFrancisco` will be similar to the object we built `sanFranciscoBuf` from. It will have an array of building objects.
+
+
+### Utilizing StreamingAbstractor
+
+StreamingAbstractors allow us to create duplex, event-based streaming systems for applications.
+
+Let's create a StreamingAbstractor.
+
+```js
+const myAbstractor = new StreamingAbstractor()
+
+myAbstractor.register('login', new Schema([
+	{
+		'name': 'username',
+		'type': 'string'
+	},
+	{
+		'name': 'number',
+		'type': 'uint',
+		'size': 16
+	}
+]))
+```
+
+Above we've registered an event called 'login' in our abstractor. Now it can recieve login events from a stream connected to another StreamingAbstractor.
+
+#### Recieving Events Through StreamingAbstractor
+
+Now that we have a StreamingAbstractor (`myAbstractor`) with the `login` event registered, we'll listen for `login` on our end.
+
+```js
+myAbstractor.on('login', (data) => {
+	console.log('Login with username ' + data.username + ' and number ' + data.number + '.')
+})
+```
+
+#### Sending Events Through StreamingAbstractor
+
+Because we've registered the `login` event, we can send `login` events using `myAbstractor`.
+
+```js
+myAbstractor.send('login', {
+	'username': 'ethan',
+	'number': 5135
+})
+```
