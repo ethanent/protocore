@@ -14,7 +14,7 @@ w.add('Schema - Simple', (result) => {
 		{
 			'name': 'alive',
 			'type': 'boolean'
-		}
+		},
 		{
 			'name': 'birthyear',
 			'type': 'uint',
@@ -63,7 +63,7 @@ w.add('Schema - Lists, complex', (result) => {
 		},
 		{
 			'name': 'isgood',
-			'type': 'boolean',
+			'type': 'boolean'
 		}
 	])
 
