@@ -46,6 +46,11 @@ module.exports = class Schema {
 
 				readIndex += 8
 			}
+			else if (readType === 'boolean') {
+				readContent.push(buf[readIndex] === 1 ? true : false)
+
+				readIndex += 1
+			}
 			else if (readType === 'string') {
 				const stringLengthLength = 4
 
@@ -166,6 +171,9 @@ module.exports = class Schema {
 				make.writeFloatLE(writeValue)
 
 				bufSegments.push(make)
+			}
+			else if (writeType === 'boolean') {
+				bufSegments.push(Buffer.from([writeValue ? 1 : 0]))
 			}
 			else if (writeType === 'string') {
 				const stringLengthLength = 4

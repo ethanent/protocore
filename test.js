@@ -12,6 +12,10 @@ w.add('Schema - Simple', (result) => {
 			'type': 'string'
 		},
 		{
+			'name': 'alive',
+			'type': 'boolean'
+		},
+		{
 			'name': 'birthyear',
 			'type': 'uint',
 			'size': 16
@@ -20,6 +24,7 @@ w.add('Schema - Simple', (result) => {
 
 	const data = {
 		'name': 'Ethan',
+		'alive': true,
 		'birthyear': 3039
 	}
 
@@ -58,15 +63,14 @@ w.add('Schema - Lists, complex', (result) => {
 		},
 		{
 			'name': 'isgood',
-			'type': 'uint',
-			'size': 8
+			'type': 'boolean'
 		}
 	])
 
 	const data = {
 		'name': 'Ethan',
 		'birthyear': 3039,
-		'isgood': 1,
+		'isgood': true,
 		'organizations': [
 			{
 				'name': 'Esourceful',
