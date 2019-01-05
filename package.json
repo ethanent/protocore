@@ -1,6 +1,6 @@
 {
   "name": "protocore",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Specify and deploy custom binary protocol structures in Node",
   "main": "index.js",
   "scripts": {
@@ -28,7 +28,8 @@
   "homepage": "https://github.com/ethanent/protocore",
   "files": [
     "index.js",
-    "model/Schema.js"
+    "model/Schema.js",
+    "model/StreamingAbstractor.js"
   ],
   "devDependencies": {
     "whew": "^1.1.3"
