@@ -35,6 +35,10 @@ const personSchema = new Schema([
 		'name': 'age',
 		'type': 'uint',
 		'size': 8
+	},
+	{
+		'name': 'alive',
+		'type': 'boolean'
 	}
 ])
 ```
@@ -48,7 +52,8 @@ It includes a `firstName` string field and an `age`, which is a UInt8.
 ```js
 const ethanBuf = personSchema.build({
 	'name': 'Ethan Davis',
-	'age': 17
+	'age': 17,
+	'alive': true
 })
 
 // Now ethanBuf is a buffer representation of a person!
@@ -64,7 +69,7 @@ Here we've built a buffer from Ethan's data using the `personSchema` Schema. The
 const parsed = personSchema.parse(ethanBuf)
 
 // parsed will now be an object with the original information about Ethan!
-// parsed = {'name': 'Ethan Davis', 'age': 17}
+// parsed = {'name': 'Ethan Davis', 'age': 17, 'alive': true}
 ```
 
 Above a buffer was parsed using `personSchema`, which returned an object representation of the data!
