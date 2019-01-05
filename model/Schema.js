@@ -47,7 +47,7 @@ module.exports = class Schema {
 				readIndex += 8
 			}
 			else if (readType === 'boolean') {
-				readContent.push(!!buf[readIndex])
+				readContent.push(buf[readIndex] === 1 ? true : false)
 
 				readIndex += 1
 			}
