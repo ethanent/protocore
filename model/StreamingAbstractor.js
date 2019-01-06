@@ -29,22 +29,26 @@ module.exports = class StreamingAbstractor extends Duplex {
 	_write (data, encoding, next) {
 		this.activeBuffer = Buffer.concat([this.activeBuffer, data])
 
-		const parsedAbstract = abstractorSchema.parse(this.activeBuffer)
+		const parsedAbstract = abstractorSchema.parse(this.activeBuffer, 0, {
+			'returnDetails': true
+		})
 
-		const correlatedEvent = this.eventSchemas[parsedAbstract.event]
+		const correlatedEvent = this.eventSchemas[parsedAbstract.data.event]
 
 		if (!correlatedEvent) {
-			this.emit('unregisteredEvent', parsedAbstract)
+			this.emit('unregisteredEvent', parsedAbstract.data)
+
+			this.activeBuffer = Buffer.alloc(0)
 		}
 		else {
-			const correlatedParseResult = correlatedEvent.parse(parsedAbstract.serialized, 0, {
-				'returnDetails': true
-			})
+			const correlatedParseResult = correlatedEvent.parse(parsedAbstract.data.serialized)
 
-			if (!correlatedParseResult.hadUnderflow) {
-				this.emit(parsedAbstract.event, correlatedParseResult.data)
+			if (!parsedAbstract.hadUnderflow) {
+				this.emit(parsedAbstract.data.event, correlatedParseResult)
 
-				this.activeBuffer = Buffer.alloc(0)
+				this.activeBuffer = this.activeBuffer.slice(parsedAbstract.finishedIndex)
+
+				if (this.activeBuffer.length > 0) this._write(Buffer.alloc(0))
 			}
 		}
 
@@ -62,3 +66,5 @@ module.exports = class StreamingAbstractor extends Duplex {
 		}))
 	}
 }
+
+module.exports.abstractorSchema = abstractorSchema

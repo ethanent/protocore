@@ -128,4 +128,42 @@ w.add('StreamingAbstractor - Event handling + sending', (result) => {
 	})
 })
 
+w.add('StreamingAbstractor - Proper buffer buffering', (result) => {
+	const messageSchema = new Schema([
+		{
+			'name': 'content',
+			'type': 'string'
+		}
+	])
+
+	const myAbstractor1 = new StreamingAbstractor()
+
+	myAbstractor1.register('message', messageSchema)
+
+	let recievedCount = 0
+
+	myAbstractor1.on('message', (data) => {
+		recievedCount++
+
+		if (recievedCount === 2 && data.content === 'Hello2!') {
+			result(true, 'Got 2 messages.')
+		}
+	})
+
+	myAbstractor1._write(Buffer.concat([
+		StreamingAbstractor.abstractorSchema.build({
+			'event': 'message',
+			'serialized': messageSchema.build({
+				'content': 'Hello!'
+			})
+		}),
+		StreamingAbstractor.abstractorSchema.build({
+			'event': 'message',
+			'serialized': messageSchema.build({
+				'content': 'Hello2!'
+			})
+		})
+	]))
+})
+
 w.test()
