@@ -150,8 +150,6 @@ w.add('StreamingAbstractor - Proper buffer buffering', (result) => {
 	myAbstractor1.on('message', (data) => {
 		recievedCount++
 
-		console.log('Recieved message')
-
 		if (recievedCount === 3 && data.content === 'Hey there.') {
 			result(true, 'Got 3 messages.')
 		}
