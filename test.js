@@ -150,8 +150,10 @@ w.add('StreamingAbstractor - Proper buffer buffering', (result) => {
 	myAbstractor1.on('message', (data) => {
 		recievedCount++
 
-		if (recievedCount === 2 && data.content === 'Hello2!') {
-			result(true, 'Got 2 messages.')
+		console.log('Recieved message')
+
+		if (recievedCount === 3 && data.content === 'Hey there.') {
+			result(true, 'Got 3 messages.')
 		}
 	})
 
@@ -169,6 +171,21 @@ w.add('StreamingAbstractor - Proper buffer buffering', (result) => {
 			})
 		})
 	]))
+
+	const build = StreamingAbstractor.abstractorSchema.build({
+		'event': 'message',
+		'serialized': messageSchema.build({
+			'content': 'Hey there.'
+		})
+	})
+
+	// Chunk message
+
+	myAbstractor1._write(build.slice(0, 15))
+
+	myAbstractor1._write(build.slice(15))
 })
 
 w.test()
+
+process.stdin.on('data', () => {})

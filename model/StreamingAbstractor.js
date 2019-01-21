@@ -34,17 +34,17 @@ module.exports = class StreamingAbstractor extends Duplex {
 			'returnDetails': true
 		})
 
-		const correlatedEvent = this.eventSchemas[parsedAbstract.data.event]
+		if (!parsedAbstract.hadUnderflow) {
+			const correlatedEvent = this.eventSchemas[parsedAbstract.data.event]
 
-		if (!correlatedEvent) {
-			this.emit('unregisteredEvent', parsedAbstract.data)
+			if (!correlatedEvent) {
+				this.emit('unregisteredEvent', parsedAbstract.data)
 
-			this.activeBuffer = Buffer.alloc(0)
-		}
-		else {
-			const correlatedParseResult = correlatedEvent.parse(parsedAbstract.data.serialized)
+				this.activeBuffer = Buffer.alloc(0)
+			}
+			else {
+				const correlatedParseResult = correlatedEvent.parse(parsedAbstract.data.serialized)
 
-			if (!parsedAbstract.hadUnderflow) {
 				this.emit(parsedAbstract.data.event, correlatedParseResult)
 
 				this.activeBuffer = this.activeBuffer.slice(parsedAbstract.finishedIndex)

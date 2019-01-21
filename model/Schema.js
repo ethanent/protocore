@@ -24,18 +24,22 @@ module.exports = class Schema {
 
 			const result = parserType.parse(buf, readIndex, parserData) // returns {? data, int readBytes, bool hadUnderflow}
 
+			if (result.hadUnderflow === true) {
+				hadUnderflow = true
+
+				continue
+			}
+
 			data[parserData.name] = result.data
 
 			readIndex += result.readBytes
-
-			if (result.hadUnderflow === true) hadUnderflow = true
 		}
 
 		if (typeof specialOptions === 'object' && specialOptions.returnDetails === true) {
 			return {
 				'data': data,
 				'finishedIndex': readIndex,
-				'underflows': hadUnderflow
+				'hadUnderflow': hadUnderflow
 			}
 		}
 		else return data
@@ -56,10 +60,6 @@ module.exports = class Schema {
 		for (let i = 0; i < writeContent.length; i++) {
 			const serializerData = writeContent[i].serializerData
 			const serializerType = serializerData.type
-
-			console.log('Serialize: ' + serializerType + ' ' + writeContent[i].value)
-
-			console.log(serializerData)
 
 			bufSegments.push(serializerType.serialize(writeContent[i].value, serializerData))
 		}
