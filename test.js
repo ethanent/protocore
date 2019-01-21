@@ -19,13 +19,18 @@ w.add('Schema - Simple', (result) => {
 			'name': 'birthyear',
 			'type': types.uint,
 			'size': 16
+		},
+		{
+			'name': 'decimal',
+			'type': types.double
 		}
 	])
 
 	const data = {
 		'name': 'Ethan',
 		'alive': true,
-		'birthyear': 3039
+		'birthyear': 3039,
+		'decimal': 5.135
 	}
 
 	const serialized = mySchema.build(data)
