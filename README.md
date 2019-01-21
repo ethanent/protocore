@@ -12,7 +12,7 @@ npm i protocore
 Then include the library in your code:
 
 ```js
-const {Schema} = require('protocore')
+const {Schema, types} = require('protocore')
 ```
 
 ## What is Protocore?
@@ -29,16 +29,16 @@ Protocore allows developers to create advanced protocols with powerful functiona
 const personSchema = new Schema([
 	{
 		'name': 'firstName',
-		'type': 'string'
+		'type': types.string
 	},
 	{
 		'name': 'age',
-		'type': 'uint',
+		'type': types.uint,
 		'size': 8
 	},
 	{
 		'name': 'alive',
-		'type': 'boolean'
+		'type': types.boolean
 	}
 ])
 ```
@@ -82,19 +82,19 @@ Lists can be defined in schemas as well.
 const citySchema = new Schema([
 	{
 		'name': 'name',
-		'type': 'string'
+		'type': types.string
 	},
 	{
 		'name': 'buildings',
-		'type': 'list',
+		'type': types.list,
 		'of': new Schema([
 			{
 				'name': 'name',
-				'type': 'string'
+				'type': types.string
 			},
 			{
 				'name': 'constructed',
-				'type': 'uint',
+				'type': types.uint,
 				'size': 16
 			}
 		])
@@ -143,11 +143,11 @@ const myAbstractor = new StreamingAbstractor()
 myAbstractor.register('login', new Schema([
 	{
 		'name': 'username',
-		'type': 'string'
+		'type': types.string
 	},
 	{
 		'name': 'number',
-		'type': 'uint',
+		'type': types.uint,
 		'size': 16
 	}
 ]))
@@ -175,3 +175,9 @@ myAbstractor.send('login', {
 	'number': 5135
 })
 ```
+
+## Creating Custom Types
+
+It's possible to build custom types for protocore schemas to use, and it's not too complex either.
+
+Protocore ships with its own built in types (ex. string, buffer, int, double, etc), and those are available for inspection in the [types directory](https://github.com/ethanent/protocore/tree/master/lib/types).
