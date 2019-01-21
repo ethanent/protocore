@@ -16,7 +16,31 @@ module.exports = class Schema {
 
 		const readContent = []
 
-		const componentNames = this.schema.map((component) => component.name)
+		const data = {}
+
+		for (let i = 0; i < this.schema.length; i++) {
+			const parserData = this.schema[i]
+			const parserType = parserData.type
+
+			const result = parserType.parse(buf, readIndex, parserData) // returns {? data, int readBytes, bool hadUnderflow}
+
+			data[parserData.name] = result.data
+
+			readIndex += result.readBytes
+
+			if (result.hadUnderflow === true) hadUnderflow = true
+		}
+
+		if (typeof specialOptions === 'object' && specialOptions.returnDetails === true) {
+			return {
+				'data': data,
+				'finishedIndex': readIndex,
+				'underflows': hadUnderflow
+			}
+		}
+		else return data
+
+		/*
 
 		for (let i = 0; i < this.schema.length; i++) {
 			const readSchema = this.schema[i]
@@ -105,6 +129,7 @@ module.exports = class Schema {
 				readIndex += listLocation + listLengthLength
 			}
 		}
+		
 
 		const data = {}
 
@@ -120,6 +145,8 @@ module.exports = class Schema {
 			}
 		}
 		else return data
+
+		*/
 	}
 
 	build (data) {
@@ -130,9 +157,24 @@ module.exports = class Schema {
 		for (let i = 0; i < this.schema.length; i++) {
 			writeContent.push({
 				'value': data[this.schema[i].name],
-				'schema': this.schema[i]
+				'serializerData': this.schema[i]
 			})
 		}
+
+		for (let i = 0; i < writeContent.length; i++) {
+			const serializerData = writeContent[i].serializerData
+			const serializerType = serializerData.type
+
+			console.log('Serialize: ' + serializerType + ' ' + writeContent[i].value)
+
+			console.log(serializerData)
+
+			bufSegments.push(serializerType.serialize(writeContent[i].value, serializerData))
+		}
+
+		return Buffer.concat(bufSegments)
+
+		/*
 
 		for (let i = 0; i < writeContent.length; i++) {
 			const writeSchema = writeContent[i].schema
@@ -220,5 +262,7 @@ module.exports = class Schema {
 		}
 
 		return Buffer.concat(bufSegments)
+
+		*/
 	}
 }

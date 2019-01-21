@@ -2,15 +2,16 @@ const path = require('path')
 const {Duplex} = require('stream')
 
 const Schema = require(path.join(__dirname, 'Schema.js'))
+const types = require(path.join(__dirname, '..', 'lib', 'types.js'))
 
 const abstractorSchema = new Schema([
 	{
 		'name': 'event',
-		'type': 'string'
+		'type': types.string
 	},
 	{
 		'name': 'serialized',
-		'type': 'buffer'
+		'type': types.buffer
 	}
 ])
 

@@ -3,21 +3,21 @@ const stream = require('stream')
 
 const w = require('whew')
 
-const {Schema, StreamingAbstractor} = require(__dirname)
+const {Schema, StreamingAbstractor, types} = require(__dirname)
 
 w.add('Schema - Simple', (result) => {
 	const mySchema = new Schema([
 		{
 			'name': 'name',
-			'type': 'string'
+			'type': types.string
 		},
 		{
 			'name': 'alive',
-			'type': 'boolean'
+			'type': types.boolean
 		},
 		{
 			'name': 'birthyear',
-			'type': 'uint',
+			'type': types.uint,
 			'size': 16
 		}
 	])
@@ -39,31 +39,31 @@ w.add('Schema - Lists, complex', (result) => {
 	const mySchema = new Schema([
 		{
 			'name': 'name',
-			'type': 'string'
+			'type': types.string
 		},
 		{
 			'name': 'birthyear',
-			'type': 'uint',
+			'type': types.uint,
 			'size': 16
 		},
 		{
 			'name': 'organizations',
-			'type': 'list',
+			'type': types.list,
 			'of': new Schema([
 				{
 					'name': 'name',
-					'type': 'string'
+					'type': types.string
 				},
 				{
 					'name': 'founded',
-					'type': 'int',
+					'type': types.int,
 					'size': 16
 				}
 			])
 		},
 		{
 			'name': 'isgood',
-			'type': 'boolean'
+			'type': types.boolean
 		}
 	])
 
@@ -96,11 +96,11 @@ w.add('StreamingAbstractor - Event handling + sending', (result) => {
 	const loginSchema = new Schema([
 		{
 			'name': 'username',
-			'type': 'string'
+			'type': types.string
 		},
 		{
 			'name': 'number',
-			'type': 'uint',
+			'type': types.uint,
 			'size': 16
 		}
 	])
@@ -132,7 +132,7 @@ w.add('StreamingAbstractor - Proper buffer buffering', (result) => {
 	const messageSchema = new Schema([
 		{
 			'name': 'content',
-			'type': 'string'
+			'type': types.string
 		}
 	])
 
