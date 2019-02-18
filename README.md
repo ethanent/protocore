@@ -1,5 +1,5 @@
 # protocore
-> Specify and deploy custom binary protocol structures in Node
+> Specify and deploy performant binary protocol structures in Node
 
 [GitHub](https://github.com/ethanent/protocore) | [NPM](https://www.npmjs.com/package/protocore)
 
