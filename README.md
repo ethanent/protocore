@@ -21,7 +21,11 @@ Protocore makes building custom binary protocols a snap.
 
 It's a lightweight Node library that takes the pain out of making binary protocols for games, databases, and other performance-dependent applications!
 
-Protocore allows developers to create advanced protocols with powerful functionality and with maximum efficiency.
+Protocore allows developers to create advanced protocols with powerful functionality and maximum efficiency.
+
+![Protocore schemas are much more efficient than JSON](https://raw.githubusercontent.com/ethanent/protocore/master/media/Bench-ComplexPerson.png)
+
+[See benchmarks ->](https://github.com/ethanent/protocore/blob/master/bench.js)
 
 ## Define a Schema
 
