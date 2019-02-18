@@ -63,6 +63,10 @@ w.add('Schema - Lists, complex', (result) => {
 					'name': 'founded',
 					'type': types.int,
 					'size': 16
+				},
+				{
+					'name': 'value',
+					'type': types.varint
 				}
 			])
 		},
@@ -79,11 +83,18 @@ w.add('Schema - Lists, complex', (result) => {
 		'organizations': [
 			{
 				'name': 'Esourceful',
-				'founded': 2006
+				'founded': 2006,
+				'value': 13422342
 			},
 			{
 				'name': 'Shh, secret!',
-				'founded': 2038
+				'founded': 2038,
+				'value': 0
+			},
+			{
+				'name': 'Test',
+				'founded': 0,
+				'value': -134223424
 			}
 		]
 	}
@@ -182,6 +193,25 @@ w.add('StreamingAbstractor - Proper buffer buffering', (result) => {
 	myAbstractor1._write(build.slice(0, 15))
 
 	myAbstractor1._write(build.slice(15))
+})
+
+w.add('Varint serialization and parsing', (result) => {
+	const varint = types.varint
+
+	const testNumbers = [255, 256, 257, 258, 16777215, 16777216, 16777217, -255, -256, -257, -16777215, -16777216]
+
+	for (let i = 0; i < testNumbers.length; i++) {
+		const gen = varint.serialize(testNumbers[i], {})
+
+		const parsed = varint.parse(gen, 0, {})
+
+		if (parsed.data !== testNumbers[i]) {
+			result(false, parsed.data + ' !== ' + testNumbers[i])
+			return
+		}
+	}
+
+	result(true, 'Comparisons succeeded')
 })
 
 w.test()
