@@ -144,6 +144,25 @@ w.add('StreamingAbstractor - Event handling + sending', (result) => {
 	})
 })
 
+w.add('Buffer serialization and parsing', (result) => {
+	const fileSchema = new Schema([
+		{
+			'name': 'data',
+			'type': types.buffer
+		}
+	])
+
+	const data = Buffer.from('HELLO THERE!')
+
+	const built = fileSchema.build({
+		'data': data
+	})
+
+	const parsed = fileSchema.parse(built)
+
+	result(data.equals(parsed.data), parsed.data.toString())
+})
+
 w.add('StreamingAbstractor - Proper buffer buffering', (result) => {
 	const messageSchema = new Schema([
 		{
