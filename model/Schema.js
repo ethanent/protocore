@@ -1,6 +1,6 @@
 module.exports = class Schema {
-	constructor (schema) {
-		this.schema = schema
+	constructor (elements) {
+		this.elements = elements
 	}
 
 	parse (buf, from, specialOptions) {
@@ -16,8 +16,8 @@ module.exports = class Schema {
 
 		const data = {}
 
-		for (let i = 0; i < this.schema.length; i++) {
-			const parserData = this.schema[i]
+		for (let i = 0; i < this.elements.length; i++) {
+			const parserData = this.elements[i]
 			const parserType = parserData.type
 
 			const result = parserType.parse(buf, readIndex, parserData) // returns {? data, int readBytes, bool hadUnderflow}
@@ -48,10 +48,10 @@ module.exports = class Schema {
 
 		const writeContent = []
 
-		for (let i = 0; i < this.schema.length; i++) {
+		for (let i = 0; i < this.elements.length; i++) {
 			writeContent.push({
-				'value': data[this.schema[i].name],
-				'serializerData': this.schema[i]
+				'value': data[this.elements[i].name],
+				'serializerData': this.elements[i]
 			})
 		}
 
