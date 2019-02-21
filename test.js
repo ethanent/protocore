@@ -3,7 +3,7 @@ const stream = require('stream')
 
 const w = require('whew')
 
-const {Schema, StreamingAbstractor, types} = require(__dirname)
+const {Schema, StreamingAbstractor, types, share} = require(__dirname)
 
 w.add('Schema - Simple', (result) => {
 	const mySchema = new Schema([
@@ -231,6 +231,64 @@ w.add('Varint serialization and parsing', (result) => {
 	}
 
 	result(true, 'Comparisons succeeded')
+})
+
+w.add('Share - Importing schemas', (result) => {
+	const schemas = share.importAll(`
+		def friend
+		string name    
+		int age size=16     
+
+		// comment!?
+
+       
+
+		   def person
+		string name
+		  int age size=16
+		list friends of=friend
+	`)
+
+	const personSchema = schemas['person']
+
+	const person = {
+		'name': 'H. Wells',
+		'age': 24836,
+		'friends': [
+			{
+				'name': 'Q. Wells',
+				'age': 24834
+			},
+			{
+				'name': 'Ethan',
+				'age': 5874
+			}
+		]
+	}
+
+	const built = personSchema.build(person)
+
+	assert.deepStrictEqual(personSchema.parse(built), person)
+
+	result(true, 'Comparisons succeeded')
+})
+
+w.add('Share - Importing as abstractor', (result) => {
+	const myAbstractor = share.importAbstractor(`
+		def user private
+		string username
+		varint friendCount
+
+		def message
+		list seenBy of=user
+		string content
+
+		def login public
+		string username
+		string password
+	`)
+
+	result(myAbstractor.eventSchemas.hasOwnProperty('login') && myAbstractor.eventSchemas.hasOwnProperty('message') && !myAbstractor.eventSchemas.hasOwnProperty('user') && myAbstractor.eventSchemas.message.elements.findIndex((element) => element.of.elements.findIndex((element2) => element2.name === 'friendCount') !== -1) !== -1, 'Attempted to validate resulting abstractor.')
 })
 
 w.test()
