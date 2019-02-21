@@ -291,6 +291,45 @@ w.add('Share - Importing as abstractor', (result) => {
 	result(myAbstractor.eventSchemas.hasOwnProperty('login') && myAbstractor.eventSchemas.hasOwnProperty('message') && !myAbstractor.eventSchemas.hasOwnProperty('user') && myAbstractor.eventSchemas.message.elements.findIndex((element) => element.of.elements.findIndex((element2) => element2.name === 'friendCount') !== -1) !== -1, 'Attempted to validate resulting abstractor.')
 })
 
+w.add('Instance type functionality', (result) => {
+	const personSchema = share.importAll(`
+
+		def address private
+		string country
+		string region
+		string street
+		int number size=24
+
+		def company private
+		string name
+		instance address of=address
+
+		def person
+		string name
+		instance currentCompany of=company
+
+	`).person
+
+	const person = {
+		'name': 'Ethan',
+		'currentCompany': {
+			'name': 'Esourceful',
+			'address': {
+				'country': 'US',
+				'region': 'CA',
+				'street': 'Corporation Ave.',
+				'number': 5135
+			}
+		}
+	}
+
+	const built = personSchema.build(person)
+
+	assert.deepStrictEqual(person, personSchema.parse(built))
+
+	result(true, 'Validated built data.')
+})
+
 w.test()
 
 process.stdin.on('data', () => {})
