@@ -188,9 +188,11 @@ Protocore ships with its own built in types (ex. string, buffer, int, double, et
 
 ## Writing Protocols with Protospec
 
-Protospec is Protocore's protocol development format. It is simple and nice to write.
+Protospec is Protocore's protocol specification format. It is nice to write.
 
 ```
+// my.pspec
+
 def player private
 string username
 varint score
@@ -204,22 +206,22 @@ def updateAllPlayers
 list players of=player
 ```
 
-To import a protospec as a `StreamingAbstractor` from a file:
+To import a protospec as a `StreamingAbstractor`:
 
 ```js
-// require fs, path
+// ... load spec, ex. fs.readFileSync(path.join(__dirname, 'my.pspec'))
 
-const myAbstractor = protospec.import(fs.readFileSync(path.join(__dirname, 'my.pspec')))
+const myAbstractor = protospec.importAbstractor(spec)
 
 myAbstractor.on('updateAllPlayers', (data) => {
 	// Do something with data.players
 })
 ```
 
-To import a protospec as an Object of Schemas:
+To import a protospec as an `Object` of `Schema`s:
 
 ```js
-const mySchemas = protospec.import(fs.readFileSync(path.join(__dirname, 'my.pspec')))
+const mySchemas = protospec.importAll(spec)
 
 const builtJoin = mySchemas.join.build({
 	'player': {
