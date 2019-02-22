@@ -3,7 +3,7 @@ const stream = require('stream')
 
 const w = require('whew')
 
-const {Schema, StreamingAbstractor, types, share} = require(__dirname)
+const {Schema, StreamingAbstractor, types, protospec} = require(__dirname)
 
 w.add('Schema - Simple', (result) => {
 	const mySchema = new Schema([
@@ -233,8 +233,8 @@ w.add('Varint serialization and parsing', (result) => {
 	result(true, 'Comparisons succeeded')
 })
 
-w.add('Share - Importing schemas', (result) => {
-	const schemas = share.importAll(`
+w.add('Protospec - Importing schemas', (result) => {
+	const schemas = protospec.importAll(`
 		def friend
 		string name    
 		int age size=16     
@@ -273,8 +273,8 @@ w.add('Share - Importing schemas', (result) => {
 	result(true, 'Comparisons succeeded')
 })
 
-w.add('Share - Importing as abstractor', (result) => {
-	const myAbstractor = share.importAbstractor(`
+w.add('Protospec - Importing as abstractor', (result) => {
+	const myAbstractor = protospec.importAbstractor(`
 		def user private
 		string username
 		varint friendCount
@@ -292,7 +292,7 @@ w.add('Share - Importing as abstractor', (result) => {
 })
 
 w.add('Instance type functionality', (result) => {
-	const personSchema = share.importAll(`
+	const personSchema = protospec.importAll(`
 
 		def address private
 		string country

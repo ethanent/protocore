@@ -12,7 +12,7 @@ npm i protocore
 Then include the library in your code:
 
 ```js
-const {Schema, types} = require('protocore')
+const {Schema, StreamingAbstractor, types, protospec} = require('protocore')
 ```
 
 ## What is Protocore?
@@ -182,6 +182,51 @@ myAbstractor.send('login', {
 
 ## Creating Custom Types
 
-It's possible to build custom types for protocore schemas to use, and it's not too complex either.
+It's possible to build custom types for Protocore schemas to use, and it's not too complex either.
 
 Protocore ships with its own built in types (ex. string, buffer, int, double, etc), and those are available for inspection in the [types directory](https://github.com/ethanent/protocore/tree/master/lib/types).
+
+## Writing Protocols with Protospec
+
+Protospec is Protocore's protocol development format. It is simple and nice to write.
+
+```
+def player private
+string username
+varint score
+int x size=16
+int y size=16
+
+def join
+instance player of=player
+
+def updateAllPlayers
+list players of=player
+```
+
+To import a protospec as a `StreamingAbstractor` from a file:
+
+```js
+// require fs, path
+
+const myAbstractor = protospec.import(fs.readFileSync(path.join(__dirname, 'my.pspec')))
+
+myAbstractor.on('updateAllPlayers', (data) => {
+	// Do something with data.players
+})
+```
+
+To import a protospec as an Object of Schemas:
+
+```js
+const mySchemas = protospec.import(fs.readFileSync(path.join(__dirname, 'my.pspec')))
+
+const builtJoin = mySchemas.join.build({
+	'player': {
+		'username': 'a',
+		'score': 2,
+		'x': 100,
+		'y': 200
+	}
+})
+```
