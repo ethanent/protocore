@@ -4,11 +4,7 @@ module.exports = class Schema {
 	}
 
 	parse (buf, from, specialOptions) {
-		if (typeof from === 'number') {
-			buf = buf.slice(from)
-		}
-
-		let readIndex = 0
+		let readIndex = typeof from === 'number' ? from : 0
 
 		let hadUnderflow = false
 
