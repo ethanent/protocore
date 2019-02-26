@@ -206,7 +206,7 @@ def updateAllPlayers
 list players of=player
 ```
 
-To import a protospec as a `StreamingAbstractor`:
+To import a Protospec as a `StreamingAbstractor`:
 
 ```js
 // ... load spec, ex. fs.readFileSync(path.join(__dirname, 'my.pspec'))
@@ -218,7 +218,7 @@ myAbstractor.on('updateAllPlayers', (data) => {
 })
 ```
 
-To import a protospec as an `Object` of `Schema`s:
+To import a Protospec as an `Object` of `Schema`s:
 
 ```js
 const mySchemas = protospec.importAll(spec)
