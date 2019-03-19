@@ -330,6 +330,58 @@ w.add('Instance type functionality', (result) => {
 	result(true, 'Validated built data.')
 })
 
+w.add('Map type functionality', (result) => {
+	const mapSchema = new Schema([
+		{
+			'name': 'info',
+			'type': types.map,
+			'key': {
+				'type': types.string
+			},
+			'value': {
+				'type': types.string
+			}
+		}
+	])
+
+	const testData = {
+		'info': new Map([
+			['name', 'Person A'],
+			['location', 'Earth'],
+			['status', 'online']
+		])
+	}
+
+	const built = mapSchema.build(testData)
+
+	assert.deepStrictEqual(testData, mapSchema.parse(built))
+
+	result(true, 'Validated built data.')
+})
+
+w.add('Map protospec functionality', (result) => {
+	const mapSchema = protospec.importAll(`
+
+		def infoData
+		map info key=string;value=string
+
+	`).infoData
+
+	const testData = {
+		'info': new Map([
+			['name', 'Person A'],
+			['location', 'Earth'],
+			['status', 'online']
+		])
+	}
+
+	const built = mapSchema.build(testData)
+
+	assert.deepStrictEqual(testData, mapSchema.parse(built))
+
+	result(true, 'Validated built data. (Protospec success!)')
+})
+
 w.test()
 
 process.stdin.on('data', () => {})
