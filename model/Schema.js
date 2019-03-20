@@ -45,6 +45,10 @@ module.exports = class Schema {
 		const writeContent = []
 
 		for (let i = 0; i < this.elements.length; i++) {
+			if (typeof data[this.elements[i].name] === 'undefined') {
+				throw new Error('Missing element: ' + this.elements[i].type.name + ' ' + this.elements[i].name)
+			}
+
 			writeContent.push({
 				'value': data[this.elements[i].name],
 				'serializerData': this.elements[i]

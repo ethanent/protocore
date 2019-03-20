@@ -382,6 +382,30 @@ w.add('Map protospec functionality', (result) => {
 	result(true, 'Validated built data. (Protospec success!)')
 })
 
+w.add('Detect missing elements', (result) => {
+	const testSchema = protospec.importAll(`
+
+		def ping
+		varint time
+
+	`).ping
+
+	const testData = {
+		
+	}
+
+	try {
+		testSchema.build(testData)
+	}
+	catch (err) {
+		result(true, 'Error as expected.')
+
+		return
+	}
+
+	result(false, 'Expected error to be thrown.')
+})
+
 w.test()
 
 process.stdin.on('data', () => {})
