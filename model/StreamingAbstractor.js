@@ -1,8 +1,7 @@
-const path = require('path')
 const {Duplex} = require('stream')
 
-const Schema = require(path.join(__dirname, 'Schema.js'))
-const types = require(path.join(__dirname, '..', 'lib', 'types.js'))
+const Schema = require('./Schema.js')
+const types = require('./../lib/types.js')
 
 const abstractorSchema = new Schema([
 	{

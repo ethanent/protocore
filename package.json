@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "node test.js",
-    "prepublishOnly": "npm test"
+    "prepublishOnly": "npm test",
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
@@ -33,6 +34,8 @@
     "lib/types/*"
   ],
   "devDependencies": {
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0",
     "whew": "^1.1.3"
   }
 }
