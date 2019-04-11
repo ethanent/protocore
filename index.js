@@ -1,5 +1,5 @@
 module.exports = {
-	'Schema': require('./model/schema.js'),
+	'Schema': require('./model/Schema.js'),
 	'StreamingAbstractor': require('./model/StreamingAbstractor.js'),
 	'types': require('./lib/types.js'),
 	'protospec': require('./lib/protospec.js')
