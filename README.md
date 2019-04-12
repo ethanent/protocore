@@ -221,7 +221,7 @@ myAbstractor.on('updateAllPlayers', (data) => {
 To import a Protospec as an `Object` of `Schema`s:
 
 ```js
-const mySchemas = protospec.importAll(spec)
+const mySchemas = protospec.importAll(spec).schemas
 
 const builtJoin = mySchemas.join.build({
 	'player': {

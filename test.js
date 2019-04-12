@@ -188,12 +188,14 @@ w.add('StreamingAbstractor - Proper buffer buffering', (result) => {
 	myAbstractor1._write(Buffer.concat([
 		StreamingAbstractor.abstractorSchema.build({
 			'event': 'message',
+			'mode': 0,
 			'serialized': messageSchema.build({
 				'content': 'Hello!'
 			})
 		}),
 		StreamingAbstractor.abstractorSchema.build({
 			'event': 'message',
+			'mode': 0,
 			'serialized': messageSchema.build({
 				'content': 'Hello2!'
 			})
@@ -202,6 +204,7 @@ w.add('StreamingAbstractor - Proper buffer buffering', (result) => {
 
 	const build = StreamingAbstractor.abstractorSchema.build({
 		'event': 'message',
+		'mode': 0,
 		'serialized': messageSchema.build({
 			'content': 'Hey there.'
 		})
@@ -247,7 +250,7 @@ w.add('Protospec - Importing schemas', (result) => {
 		string name
 		  int age size=16
 		list friends of=friend
-	`)
+	`).schemas
 
 	const personSchema = schemas['person']
 
@@ -308,7 +311,7 @@ w.add('Instance type functionality', (result) => {
 		string name
 		instance currentCompany of=company
 
-	`).person
+	`).schemas.person
 
 	const person = {
 		'name': 'Ethan',
@@ -365,7 +368,7 @@ w.add('Map protospec functionality', (result) => {
 		def infoData
 		map info key=string;value=string
 
-	`).infoData
+	`).schemas.infoData
 
 	const testData = {
 		'info': new Map([
@@ -404,6 +407,52 @@ w.add('Detect missing elements', (result) => {
 	}
 
 	result(false, 'Expected error to be thrown.')
+})
+
+w.add('Request and response', async (result) => {
+	const testAbstractor = () => protospec.importAbstractor(`
+
+		def setName private
+		string name
+
+		def welcomeName private
+		string response
+
+		exchange hello
+		request setName
+		response welcomeName
+
+		def hello_unused
+		string greeting
+
+	`)
+
+	const a1 = testAbstractor()
+
+	const a2 = testAbstractor()
+
+	a1.pipe(a2)
+	a2.pipe(a1)
+
+	a1.on('hello', (data, res) => {
+		res({
+			'response': 'Hello, ' + data.name + '!'
+		})
+	})
+
+	const res1 = await a2.request('hello', {
+		'name': 'Ethan'
+	})
+
+	const res2 = await a2.request('hello', {
+		'name': 'Tester'
+	})
+
+	const res3 = await a2.request('hello', {
+		'name': 'Yolanda'
+	})
+
+	result(res1.response === 'Hello, Ethan!' && res2.response === 'Hello, Tester!' && res3.response === 'Hello, Yolanda!')
 })
 
 w.test()
