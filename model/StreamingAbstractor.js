@@ -125,6 +125,11 @@ module.exports = class StreamingAbstractor extends Duplex {
 
 	}
 
+	bind (stream) {
+		this.pipe(stream)
+		stream.pipe(this)
+	}
+
 	request (exchangeName, data) {
 		if (!this.exchanges.hasOwnProperty(exchangeName)) {
 			throw new Error('Exchange \'' + exchangeName + '\' has not been defined.')

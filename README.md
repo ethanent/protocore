@@ -155,6 +155,8 @@ myAbstractor.register('login', new Schema([
 		'size': 16
 	}
 ]))
+
+// Now we can bind myAbstractor to a stream using myAbstractor.bind(stream)
 ```
 
 Above we've registered an event called 'login' in our abstractor. Now it can recieve login events from a stream connected to another `StreamingAbstractor`.

@@ -431,8 +431,7 @@ w.add('Request and response', async (result) => {
 
 	const a2 = testAbstractor()
 
-	a1.pipe(a2)
-	a2.pipe(a1)
+	a1.bind(a2)
 
 	a1.on('hello', (data, res) => {
 		res({
