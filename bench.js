@@ -52,12 +52,61 @@ const sets = [
 				}
 			]
 		}
+	},
+	{
+		'name': 'Building',
+		'schema': new Schema([
+			{
+				'name': 'title',
+				'type': types.string
+			},
+			{
+				'name': 'number',
+				'type': types.uint,
+				'size': 16
+			},
+			{
+				'name': 'residents',
+				'type': types.list,
+				'of': new Schema([
+					{
+						'name': 'firstName',
+						'type': types.string
+					},
+					{
+						'name': 'age',
+						'type': types.uint,
+						'size': 8
+					}
+				])
+			}
+		]),
+		'data': {
+			'title': 'Home',
+			'number': 19,
+			'residents': [
+				{
+					'firstName': 'James',
+					'age': 255
+				},
+				{
+					'firstName': 'Ethan',
+					'age': 5
+				},
+				{
+					'firstName': 'Laruel',
+					'age': 255
+				}
+			]
+		}
 	}
 ]
 
 for (let i = 0; i < sets.length; i++) {
 	console.log('\nBench set: ' + sets[i].name)
 
-	console.log('JSON size: ' + Buffer.from(JSON.stringify(sets[i].data)).length + ' bytes')
-	console.log('Protocore size: ' + sets[i].schema.build(sets[i].data).length + ' bytes')
+	const arrdata = Object.values(sets[i].data).map((v) => Array.isArray(v) ? v.map((vd) => Object.values(vd)) : v)
+
+	console.log('Keyless JSON size: ' + Buffer.from(JSON.stringify(arrdata)).length + ' bytes')
+	console.log('Protocore (inherently keyless) size: ' + sets[i].schema.build(sets[i].data).length + ' bytes')
 }
