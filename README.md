@@ -78,9 +78,9 @@ const parsed = personSchema.parse(ethanBuf)
 
 Above a buffer was parsed using `personSchema`, which returned an object representation of the data!
 
-## Lists in Schemas
+## Lists and Maps in Schemas
 
-Lists can be defined in schemas as well.
+Lists and Maps can be defined in schemas as well.
 
 ```js
 const citySchema = new Schema([
@@ -102,13 +102,23 @@ const citySchema = new Schema([
 				'size': 16
 			}
 		])
+	},
+	{
+		'name': 'residentLifetimes',
+		'type': types.map,
+		'key': {
+			'type': types.string
+		},
+		'value': {
+			'type': types.varint
+		}
 	}
 ])
 ```
 
-We've now defined `citySchema`, which represents a city with buildings. Buildings have names and also contain the year they were constructed.
+We've now defined `citySchema`, which represents a city with buildings and residents. Buildings have names and also contain the year they were constructed. Residents' time spent in the city are represented in the `residentLifetimes` map.
 
-### Serializing Lists in Schemas
+### Serializing Lists and Maps in Schemas
 
 ```js
 const sanFranciscoBuf = citySchema.build({
@@ -122,18 +132,22 @@ const sanFranciscoBuf = citySchema.build({
 			'name': 'Ferry Building',
 			'constructed': 1898
 		}
-	]
+	],
+	'residentLifetimes': {
+		'Ethan': 8,
+		'James': 9,
+		'Bohn': 12
+	}
 })
 ```
 
-### Parsing Lists in Schemas
+### Parsing Lists and Maps in Schemas
 
 ```js
 const sanFrancisco = citySchema.parse(sanFranciscoBuf)
 ```
 
-`sanFrancisco` will be similar to the object we built `sanFranciscoBuf` from. It will have an array of building objects.
-
+`sanFrancisco` will be similar to the object we built `sanFranciscoBuf` from. It will have an array of building objects. It will also have a map (object with appropriate types) for `residentLifetimes`.
 
 ## Utilizing StreamingAbstractor
 
@@ -246,6 +260,7 @@ string username
 def ResUser private
 string username
 uint age size=8
+aliasUses map key=string;value=varint
 
 exchange getUser
 request ReqUser
@@ -260,7 +275,11 @@ Server handles requests:
 perClientAbstractor.on('getUser', (req, res) => {
 	res({
 		'username': req.username,
-		'age': Math.floor(Math.random() * 100)
+		'age': Math.floor(Math.random() * 100),
+		'aliasUses': {
+			'test': 5,
+			'testB': 7
+		}
 	})
 })
 ```
@@ -273,5 +292,5 @@ const userRes = await clientAbstractor.request('getUser', {
 })
 
 console.log(userRes)
-// => {'username': 'ethan', 'age': 18}
+// => {'username': 'ethan', 'age': 18, 'aliasUses': {'test': 5, 'testB': 7}}
 ```
