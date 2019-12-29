@@ -234,3 +234,44 @@ const builtJoin = mySchemas.join.build({
 	}
 })
 ```
+
+## Exchanges in a protocol
+
+Protocore has a built-in protocol feature called an `Exchange` which allows protocols to define transfers of information in a "request-response" manner.
+
+```
+def ReqUser private
+string username
+
+def ResUser private
+string username
+uint age size=8
+
+exchange getUser
+request ReqUser
+response ResUser
+```
+
+Note that in this Protospec, the `ReqUser` and `ResUser` definitions are private. This means that they should not be directly sent over the `StreamingAbstractor`.
+
+Server handles requests:
+
+```js
+perClientAbstractor.on('getUser', (req, res) => {
+	res({
+		'username': req.username,
+		'age': Math.floor(Math.random() * 100)
+	})
+})
+```
+
+Client sends requests:
+
+```js
+const userRes = await clientAbstractor.request('getUser', {
+	'username': 'ethan'
+})
+
+console.log(userRes)
+// => {'username': 'ethan', 'age': 18}
+```
